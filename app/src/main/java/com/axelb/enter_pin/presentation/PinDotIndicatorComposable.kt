@@ -1,5 +1,10 @@
 package com.axelb.enter_pin.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,10 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.axelb.enter_pin.ui.theme.MyColor
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PinDotIndicatorComposable(
 	modifier: Modifier = Modifier,
-	pinDigitCount: Int
+	pinDigitCount: Int,
+	isIncorrectPin: Boolean
 ) {
 	Column(
 		modifier = modifier,
@@ -33,7 +40,7 @@ fun PinDotIndicatorComposable(
 			textAlign = TextAlign.Center,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(bottom = 18.dp)
+				.padding(bottom = 18.dp, top = 24.dp)
 		)
 		
 		Row(
@@ -55,6 +62,26 @@ fun PinDotIndicatorComposable(
 				)
 			}
 		}
-
+		if (isIncorrectPin) {
+			Text(
+				text = "Incorrect PIN. Let's try again.",
+				color = Color.Red,
+				fontWeight = FontWeight.W500,
+				fontSize = 18.sp,
+				textAlign = TextAlign.Center,
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(top = 18.dp)
+			)
+		} else {
+			Text(
+				text = "",
+				fontWeight = FontWeight.W500,
+				fontSize = 18.sp,
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(top = 18.dp)
+			)
+		}
 	}
 }

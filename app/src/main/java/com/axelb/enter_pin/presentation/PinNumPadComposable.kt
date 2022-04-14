@@ -44,6 +44,8 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun PinNumPadComposable(
 	modifier: Modifier = Modifier,
+	onButtonClick: (Int) -> Unit = { },
+	onBackspace: () -> Unit = { }
 ) {
 	Column(
 		modifier = modifier,
@@ -54,32 +56,32 @@ fun PinNumPadComposable(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceEvenly
 		) {
-			PinButtonComposable(1)
-			PinButtonComposable(2)
-			PinButtonComposable(3)
+			PinButtonComposable(1, onButtonClick)
+			PinButtonComposable(2, onButtonClick)
+			PinButtonComposable(3, onButtonClick)
 		}
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceEvenly
 		) {
-			PinButtonComposable(4)
-			PinButtonComposable(5)
-			PinButtonComposable(6)
+			PinButtonComposable(4, onButtonClick)
+			PinButtonComposable(5, onButtonClick)
+			PinButtonComposable(6, onButtonClick)
 		}
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceEvenly
 		) {
-			PinButtonComposable(7)
-			PinButtonComposable(8)
-			PinButtonComposable(9)
+			PinButtonComposable(7, onButtonClick)
+			PinButtonComposable(8, onButtonClick)
+			PinButtonComposable(9, onButtonClick)
 		}
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceEvenly
 		) {
 			Box(modifier = Modifier.size(80.dp))
-			PinButtonComposable(0)
+			PinButtonComposable(0, onButtonClick)
 			Box(modifier = Modifier
 				.padding(vertical = 16.dp)
 				.size(80.dp)) {
@@ -89,6 +91,11 @@ fun PinNumPadComposable(
 					modifier = Modifier
 						.size(42.dp)
 						.align(Alignment.Center)
+						.clickable(
+							interactionSource = remember { MutableInteractionSource() },
+							indication = null,
+							onClick = { onBackspace() }
+						)
 				)
 			}
 		}
@@ -117,7 +124,7 @@ fun PinNumPadComposable(
 @Composable
 private fun PinButtonComposable(
 		padNumber: Int,
-		onClick: () -> Int = { 0 }
+		onClick: (Int) -> Unit = { }
 ) {
 	val shape = RoundedCornerShape(50)
 	val padSize = 80.dp
@@ -148,10 +155,9 @@ private fun PinButtonComposable(
 					onPress = {
 						isPressedChannel.trySend(true)
 						if (tryAwaitRelease()) {
-							onClick()
+							onClick(padNumber)
 						}
 						isPressedChannel.trySend(false)
-
 					}
 				)
 			}

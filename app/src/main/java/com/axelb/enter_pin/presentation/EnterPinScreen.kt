@@ -2,7 +2,7 @@ package com.axelb.enter_pin.presentation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -13,10 +13,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.axelb.enter_pin.ui.theme.MyColor
+import kotlinx.coroutines.delay
 import kotlin.math.*
 
 @Composable
 fun EnterPinScreen(modifier: Modifier = Modifier) {
+	val enteredPin = remember { mutableStateListOf<Int>() }
+	val isIncorrectPin = remember { mutableStateOf(false) }
+
 	Column(
 		modifier = modifier
 			.fillMaxSize()
@@ -40,12 +44,27 @@ fun EnterPinScreen(modifier: Modifier = Modifier) {
 		)
 
 		PinDotIndicatorComposable(
-			modifier = Modifier.weight(1f).padding(top = 18.dp),
-			pinDigitCount = 2
+			modifier = Modifier
+				.weight(1.5f),
+			pinDigitCount = enteredPin.size,
+			isIncorrectPin = isIncorrectPin.value
 		)
 
 		PinNumPadComposable(
-			modifier = Modifier.weight(5f, true).padding(vertical = 18.dp)
+			modifier = Modifier
+				.weight(5f, true)
+				.padding(vertical = 18.dp),
+			onButtonClick = {
+				enteredPin.add(it)
+				if (enteredPin.size == 6) {
+					isIncorrectPin.value = true
+					enteredPin.clear()
+				}
+			},
+			onBackspace = {
+				if (enteredPin.size > 0)
+					enteredPin.removeLast()
+			}
 		)
 	}
 }
